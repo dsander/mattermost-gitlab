@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EstimatesJob < BaseJob
   attr_reader :command
 
@@ -17,7 +19,7 @@ class EstimatesJob < BaseJob
     issues = Gitlab.issues(nil, args).auto_paginate
     issues.each do |issue|
       time_sum += issue.time_stats.time_estimate
-      issues_without_estimates << issue.web_url if issue.time_stats.time_estimate == 0
+      issues_without_estimates << issue.web_url if issue.time_stats.time_estimate.zero?
     end
 
     lines = [
@@ -37,7 +39,7 @@ class EstimatesJob < BaseJob
   end
 
   def response_options
-    {username: 'GitLab', icon: "https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png"}
+    { username: 'GitLab', icon: "https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" }
   end
 
   def transform_query_params(args)
@@ -49,14 +51,15 @@ class EstimatesJob < BaseJob
 
   def url_to_api_params(url)
     args = Rack::Utils.parse_query(URI(url).query)
-    args = transform_query_params(args)
+    transform_query_params(args)
   end
 
   def seconds_to_human(seconds)
-    {'w' => 8 * 5 * 3600, 'd' => 8 * 3600, 'h' => 3600}.map do |label, duration|
+    durations = { 'w' => 8 * 5 * 3600, 'd' => 8 * 3600, 'h' => 3600 }.map do |label, duration|
       dur = seconds / duration
       seconds = seconds % duration
       [label, dur]
-    end.select { |_, dur| dur > 0 }.map { |label, dur| "#{dur}#{label}" }.join(' ')
+    end
+    durations.select { |_, dur| dur.positive? }.map { |label, dur| "#{dur}#{label}" }.join(' ')
   end
 end

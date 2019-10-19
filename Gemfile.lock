@@ -120,6 +120,7 @@ DEPENDENCIES
   rerun
   roda
   rspec
+  rubocop
   simplecov
   solargraph
   sucker_punch

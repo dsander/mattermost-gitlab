@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe '/api/slash/estimates' do
   it 'works with the correct parameters' do
     expect(EstimatesJob).to receive(:perform_async)

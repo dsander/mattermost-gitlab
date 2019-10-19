@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe '/' do
   it 'should return success' do
     get '/', nil, {}

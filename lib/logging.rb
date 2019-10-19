@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 module Logging
@@ -12,7 +14,7 @@ module Logging
   end
 
   def self.logger=(log)
-    @logger = (log ? log : Logger.new('/dev/null'))
+    @logger = (log || Logger.new('/dev/null'))
   end
 
   def logger

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'roda'
 require "rack/attack"
 
@@ -10,15 +12,15 @@ class Server < Roda
 
   route do |r|
     r.root do
-      <<~EOR
-      <p>
-      Mattermost slash command handler to summarize issue time estimates based on GitLab issue dashboard link
-      </p>
+      <<~TEMPLATE
+        <p>
+        Mattermost slash command handler to summarize issue time estimates based on GitLab issue dashboard link
+        </p>
 
-      <p>
-      Create a slash command and configure "#{r.env['rack.url_scheme']}://#{r.env['HTTP_HOST']}/api/slash/estimates" as the request URL.
-      </p>
-      EOR
+        <p>
+        Create a slash command and configure "#{r.env['rack.url_scheme']}://#{r.env['HTTP_HOST']}/api/slash/estimates" as the request URL.
+        </p>
+      TEMPLATE
     end
 
     r.on 'api' do

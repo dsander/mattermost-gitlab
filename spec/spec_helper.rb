@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 SimpleCov.start do
   add_filter '/spec/'
@@ -39,7 +41,7 @@ RSpec.configure do |config|
       'token' => 'token',
       'trigger_id' => '123abc',
       'user_id' => 'jgwefzmoocxtri6ia',
-      'user_name' => 'dsander'}
+      'user_name' => 'dsander' }
   end
 
   # config.profile_examples = 10

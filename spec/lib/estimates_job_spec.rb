@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe EstimatesJob do
   let(:job) { EstimatesJob.new }
 

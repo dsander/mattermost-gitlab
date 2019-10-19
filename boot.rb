@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'zeitwerk'
 require 'sucker_punch'
 require 'gitlab'
