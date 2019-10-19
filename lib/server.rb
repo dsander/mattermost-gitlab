@@ -29,8 +29,10 @@ class Server < Roda
           ""
         rescue SlashCommand::InvalidToken
           response.status = 403
+          ""
         rescue SlashCommand::MissingParams
           response.status = 422
+          ""
         end
       end
     end

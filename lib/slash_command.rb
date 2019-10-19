@@ -19,9 +19,8 @@ class SlashCommand
 
   def respond(lines:, response_type: 'ephemeral', icon: nil, username:)
     res = HTTParty.post @response_url,
-                        body: JSON.dump({text: lines.join("\n"), response_type: response_type, icon_url: icon, props: {override_icon_url: icon, override_username: username}}),
+                        body: JSON.dump({text: lines.join("\n"), response_type: response_type, icon_url: icon, username: username}),
                         headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
     logger.error "Unable to post response to Mattermost: #{res}" if res.code != 200
   end
-
 end

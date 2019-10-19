@@ -25,6 +25,7 @@ class EstimatesJob < BaseJob
       command.text,
       "#{issues.length} issues: **#{seconds_to_human(time_sum)}**"
     ]
+
     respond(lines: lines, response_type: 'in_channel')
     respond(lines: ["Issues missing estimations:"] + issues_without_estimates)
   rescue StandardError => e
