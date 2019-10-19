@@ -3,8 +3,8 @@ class EstimatesJob < BaseJob
 
   def perform(command)
     @command = command
-    args = Rack::Utils.parse_query(URI(command.text).query)
-    args = transform_query_params(args)
+
+    args = url_to_api_params(command.text)
 
     if args.empty?
       respond(lines: ["Invalid URL, please provide a URL to GitLab issue list and apply at least one filter!"])
@@ -41,18 +41,21 @@ class EstimatesJob < BaseJob
   end
 
   def transform_query_params(args)
-    args = args.slice('assignee_username', 'milestone_title', 'label_name[]', 'author_username', 'scope', 'state')
-    if labels = args.delete('label_name[]')
-      args['labels'] = labels.is_a?(Array) ? labels.join(',') : labels
-    end
+    args['labels'] = Array(args.delete('label_name[]')).join(',') if args['label_name[]']
     args['milestone'] = args.delete('milestone_title') if args['milestone_title']
+    args = args.slice('assignee_username', 'milestone', 'labels', 'author_username', 'scope', 'state')
     args.transform_keys!(&:to_sym)
+  end
+
+  def url_to_api_params(url)
+    args = Rack::Utils.parse_query(URI(url).query)
+    args = transform_query_params(args)
   end
 
   def seconds_to_human(seconds)
     {'w' => 8 * 5 * 3600, 'd' => 8 * 3600, 'h' => 3600}.map do |label, duration|
       dur = seconds / duration
-      time_sum = seconds % duration
+      seconds = seconds % duration
       [label, dur]
     end.select { |_, dur| dur > 0 }.map { |label, dur| "#{dur}#{label}" }.join(' ')
   end
