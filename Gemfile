@@ -23,5 +23,11 @@ group :development, :test do
   gem 'simplecov', require: false
   gem 'webmock', require: false
   gem 'solargraph'
+  gem 'pronto-simplecov'
+end
+
+group :lint do
   gem 'rubocop'
+  gem 'pronto'
+  gem 'pronto-rubocop'
 end
