@@ -1,0 +1,35 @@
+name: CI
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "2.6"
+      - name: Run Rubocop
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3 --without default development test
+          export PRONTO_PULL_REQUEST_ID="$(jq --raw-output .number "$GITHUB_EVENT_PATH")"
+          export PRONTO_GITHUB_ACCESS_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          bundle exec pronto run -f github_status github_pr -c origin/master
+  specs:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "2.6"
+      - name: Run the specs
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          bundle exec rspec
+          export PRONTO_PULL_REQUEST_ID="$(jq --raw-output .number "$GITHUB_EVENT_PATH")"
+          export PRONTO_GITHUB_ACCESS_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          bundle exec pronto run -f github_status github_pr -c origin/master -r simplecov
