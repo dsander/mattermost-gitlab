@@ -3,6 +3,10 @@
 require 'zeitwerk'
 require 'sucker_punch'
 require 'gitlab'
+require 'roda'
+require "rack/attack"
+require "active_support/core_ext/string/inflections"
+require 'logger'
 
 if ENV['RACK_ENV'] == 'development'
   require 'dotenv'

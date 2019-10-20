@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'roda'
-require "rack/attack"
-
 class Server < Roda
   use Rack::Attack
   include Logging

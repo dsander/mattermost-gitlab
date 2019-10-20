@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/string/inflections"
-
 class EstimatesJob < BaseJob
   include ActiveSupport::Inflector
   attr_reader :command, :args
