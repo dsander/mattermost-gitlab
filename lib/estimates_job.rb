@@ -1,45 +1,33 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/string/inflections"
+
 class EstimatesJob < BaseJob
-  attr_reader :command
+  include ActiveSupport::Inflector
+  attr_reader :command, :args
 
-  def perform(command)
+  def perform(command, hostname)
     @command = command
+    @args = url_to_api_params(command.text)
 
-    args = url_to_api_params(command.text)
+    validate_args || return
 
-    if args.empty?
-      respond(lines: ["Invalid URL, please provide a URL to GitLab issue list and apply at least one filter!"])
-      return
-    end
+    (time_sum, issues, issues_without_estimates) = load_issues
 
-    time_sum = 0
-    issues_without_estimates = []
+    actions = if issues_without_estimates.length.positive?
+                [{ name: "Show #{issues_without_estimates.length} issues without estimates",
+                   integration: { url: "#{hostname}/api/actions/list_unestimated",
+                                  context: { response_url: command.response_url, args: args, token: ENV['ESTIMATES_TOKEN'] } } }]
+              else
+                []
+              end
 
-    issues = Gitlab.issues(nil, args).auto_paginate
-    issues.each do |issue|
-      time_sum += issue.time_stats.time_estimate
-      issues_without_estimates << issue.web_url if issue.time_stats.time_estimate.zero?
-    end
-
-    lines = [
-      "Time estimates for issues with: " + args.map { |k, v| "#{k.downcase}: **#{v}**" }.join(" "),
-      command.text,
-      "#{issues.length} issues: **#{seconds_to_human(time_sum)}**"
-    ]
-
-    respond(lines: lines, response_type: 'in_channel')
-    respond(lines: ["Issues missing estimations:"] + issues_without_estimates)
+    respond(lines: [], attachments: [{ title: "Time estimation summary for #{issues.length} issues", title_link: command.text,
+                                       text: "#### #{seconds_to_human(time_sum)}",
+                                       fields: args.map { |k, v| { title: k.to_s.humanize, value: v, short: true } },
+                                       actions: actions }], response_type: 'in_channel')
   rescue StandardError => e
-    respond(lines: [e.message] + e.backtrace, response_type: 'in_channel')
-  end
-
-  def respond(args)
-    command.respond(response_options.merge(args))
-  end
-
-  def response_options
-    { username: 'GitLab', icon: "https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" }
+    respond(lines: [e.message] + e.backtrace)
   end
 
   def transform_query_params(args)

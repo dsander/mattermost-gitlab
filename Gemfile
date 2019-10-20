@@ -14,6 +14,7 @@ gem 'roda'
 gem 'puma'
 gem 'zeitwerk'
 gem 'sucker_punch'
+gem 'activesupport', require: false
 
 group :development, :test do
   gem 'dotenv'

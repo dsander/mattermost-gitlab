@@ -9,7 +9,7 @@ Style/StringLiterals:
 Bundler/OrderedGems:
   Enabled: false
 
-Documentation:
+Style/Documentation:
   Enabled: false
 
 Metrics/LineLength:
