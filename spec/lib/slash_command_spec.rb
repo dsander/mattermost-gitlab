@@ -6,7 +6,7 @@ RSpec.describe SlashCommand do
   it "sends a response to mattermost" do
     stub_request(:post, "https://mattermost.local/hooks/commands/rri1ri1s53gu5g37kckk46qsfh")
       .with(
-        body: "{\"text\":\"Hello\\nworld\",\"response_type\":\"ephemeral\",\"icon_url\":\"http://icon.com\",\"username\":\"test\"}",
+        body: "{\"text\":\"Hello\\nworld\",\"response_type\":\"ephemeral\",\"icon_url\":\"http://icon.com\",\"username\":\"test\",\"attachments\":[]}",
         headers: {
           'Accept' => 'application/json',
           'Content-Type' => 'application/json'

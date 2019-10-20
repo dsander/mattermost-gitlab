@@ -10,6 +10,10 @@ class Server < Roda
   plugin :json
   plugin :json_parser
 
+  def hostname(req)
+    "#{req.env['rack.url_scheme']}://#{req.env['HTTP_HOST']}"
+  end
+
   route do |r|
     r.root do
       <<~TEMPLATE
@@ -18,7 +22,7 @@ class Server < Roda
         </p>
 
         <p>
-        Create a slash command and configure "#{r.env['rack.url_scheme']}://#{r.env['HTTP_HOST']}/api/slash/estimates" as the request URL.
+        Create a slash command and configure "#{hostname(r)}/api/slash/estimates" as the request URL.
         </p>
       TEMPLATE
     end
@@ -27,7 +31,21 @@ class Server < Roda
       r.on 'slash' do
         r.post 'estimates' do
           cmd = SlashCommand.new(r.params, ENV['ESTIMATES_TOKEN'])
-          EstimatesJob.perform_async(cmd)
+          EstimatesJob.perform_async(cmd, hostname(r))
+          ""
+        rescue SlashCommand::InvalidToken
+          response.status = 403
+          ""
+        rescue SlashCommand::MissingParams
+          response.status = 422
+          ""
+        end
+      end
+
+      r.on "actions" do
+        r.post 'list_unestimated' do
+          cmd = ActionCommand.new(r.params, ENV['ESTIMATES_TOKEN'])
+          ListUnestimatedJob.perform_async(cmd)
           ""
         rescue SlashCommand::InvalidToken
           response.status = 403

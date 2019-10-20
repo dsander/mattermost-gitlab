@@ -44,6 +44,25 @@ RSpec.configure do |config|
       'user_name' => 'dsander' }
   end
 
+  def unestimated_params
+    { "user_id" => "jgwefzak6cxtri6ia",
+      "channel_id" => "123",
+      "team_id" => "",
+      "post_id" => "wmwfe9yn5gykamhrc",
+      "trigger_id" => "cjEzeGVrMWQ1N3Iamd3ZWZ6bW9vdGdxOGQ0YWs2Y3h0cmk2aWE6MTQUNIcTBnbG5XZWV1cnpyZkZXVVg4bzhOUmxwQ216VjIrQ1dJZkE=",
+      "type" => "",
+      "data_source" => "",
+      "context" =>
+      { "args" =>
+        { "assignee_username" => "dominik.sander",
+          "labels" => "Release",
+          "milestone" => "Release 6.0",
+          "scope" => "all",
+          "state" => "opened" },
+        'response_url' => 'https://mattermost.local/hooks/commands/rri1ri1s53gu5g37kckk46qsfh',
+        "token" => "9o6d8ijdqj8q7piu6dx3jig34a" } }
+  end
+
   # config.profile_examples = 10
 
   config.expect_with :rspec do |expectations|
