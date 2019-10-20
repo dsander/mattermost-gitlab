@@ -8,7 +8,7 @@ class Server < Roda
   plugin :json_parser
 
   def hostname(req)
-    "#{req.env['rack.url_scheme']}://#{req.env['HTTP_HOST']}"
+    ENV.fetch("DOMAIN", "#{req.env['rack.url_scheme']}://#{req.env['HTTP_HOST']}")
   end
 
   route do |r|
