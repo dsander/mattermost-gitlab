@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 module Logging
-  def self.initialize_logger(log_target = STDOUT, log_level = Logger::INFO)
+  def self.initialize_logger(log_target = STDOUT, log_level = Logger::DEBUG)
     @logger = Logger.new(log_target)
-    @logger.level = ENV["RACK_ENV"] == 'development' ? Logger::DEBUG : log_level
+    @logger.level = log_level
     @logger
   end
 

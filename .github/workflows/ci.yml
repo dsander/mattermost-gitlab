@@ -16,7 +16,7 @@ jobs:
           bundle install --jobs 4 --retry 3 --without default development test
           export PRONTO_PULL_REQUEST_ID="$(jq --raw-output .number "$GITHUB_EVENT_PATH")"
           export PRONTO_GITHUB_ACCESS_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          bundle exec pronto run -f github_status github_pr -c origin/master
+          bundle exec pronto run -f github_status github_pr -c origin/master -r rubocop
   specs:
     runs-on: ubuntu-18.04
     steps:
